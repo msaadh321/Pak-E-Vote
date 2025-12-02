@@ -1,0 +1,2639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PakVote - Secure E-Voting System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <style>
+        :root {
+            --primary-green: #006400;
+            --light-green: #4CAF50;
+            --dark-green: #004d00;
+            --primary-white: #ffffff;
+            --off-white: #f8f9fa;
+            --gray-light: #e9ecef;
+            --gray-medium: #6c757d;
+            --gray-dark: #343a40;
+            --accent-gold: #ffd700;
+            --accent-red: #dc3545;
+            --accent-blue: #007bff;
+            --accent-purple: #6f42c1;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--gray-dark);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--primary-green), var(--dark-green));
+            color: var(--primary-white);
+            padding: 1rem 0;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--accent-gold);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .logo span {
+            color: var(--accent-gold);
+        }
+
+        .logo p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+            .nav-links a {
+                color: var(--primary-white);
+                text-decoration: none;
+                font-weight: 500;
+                transition: var(--transition);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 16px;
+                border-radius: 50px;
+            }
+
+                .nav-links a:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                    transform: translateY(-2px);
+                }
+
+                .nav-links a.active {
+                    background: rgba(255, 255, 255, 0.15);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+            .user-profile:hover {
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-gold), var(--light-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--dark-green);
+        }
+
+        /* Main Content */
+        .main-content {
+            min-height: calc(100vh - 180px);
+            padding: 30px 0;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            display: none;
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(0, 100, 0, 0.9) 0%, rgba(0, 77, 0, 0.9) 100%);
+            color: white;
+            border-radius: var(--border-radius);
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .hero-section.active-section {
+                display: block;
+                animation: fadeInUp 0.8s ease;
+            }
+
+            .hero-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+                background-size: cover;
+            }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-section h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Authentication Styles */
+        .auth-section {
+            display: none;
+        }
+
+            .auth-section.active-section {
+                display: block;
+                animation: fadeIn 0.5s ease;
+            }
+
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 70vh;
+        }
+
+        .auth-card {
+            background: var(--primary-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            transform: translateY(0);
+            transition: var(--transition);
+        }
+
+            .auth-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-lg);
+            }
+
+        .auth-header {
+            background: linear-gradient(to right, var(--primary-green), var(--dark-green));
+            padding: 2rem;
+            text-align: center;
+            color: white;
+        }
+
+            .auth-header h2 {
+                font-size: 1.8rem;
+                margin-bottom: 0.5rem;
+            }
+
+        .auth-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 4px;
+            margin: 0 auto;
+            width: fit-content;
+        }
+
+        .auth-tab {
+            padding: 10px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            background: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+        }
+
+            .auth-tab.active {
+                background: white;
+                color: var(--primary-green);
+                box-shadow: var(--shadow-sm);
+            }
+
+        .auth-body {
+            padding: 2rem;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+            .auth-form.active {
+                display: block;
+                animation: slideInRight 0.5s ease;
+            }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: 500;
+                color: var(--gray-dark);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+                .form-group label i {
+                    color: var(--primary-green);
+                    width: 20px;
+                }
+
+            .form-group input, .form-group select, .form-group textarea {
+                width: 100%;
+                padding: 14px 16px;
+                border: 2px solid var(--gray-light);
+                border-radius: 10px;
+                font-family: 'Inter', sans-serif;
+                font-size: 1rem;
+                transition: var(--transition);
+                background: var(--off-white);
+            }
+
+                .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+                    border-color: var(--primary-green);
+                    outline: none;
+                    background: white;
+                    box-shadow: 0 0 0 3px rgba(0, 100, 0, 0.1);
+                }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 40px;
+            background: none;
+            border: none;
+            color: var(--gray-medium);
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary-green), var(--light-green));
+            color: var(--primary-white);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-md);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+            }
+
+        .btn-secondary {
+            background: linear-gradient(to right, var(--gray-medium), var(--gray-dark));
+        }
+
+        .btn-small {
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            width: auto;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        /* CNIC Upload Styles */
+        .upload-section {
+            margin-bottom: 2rem;
+        }
+
+        .upload-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .upload-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .upload-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .upload-box {
+            border: 2px dashed var(--gray-light);
+            border-radius: 10px;
+            padding: 2rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--off-white);
+            position: relative;
+            overflow: hidden;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .upload-box:hover {
+                border-color: var(--primary-green);
+                background: rgba(0, 100, 0, 0.05);
+            }
+
+            .upload-box.dragover {
+                border-color: var(--light-green);
+                background: rgba(76, 175, 80, 0.1);
+            }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            color: var(--gray-medium);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .upload-box:hover .upload-icon {
+            color: var(--primary-green);
+        }
+
+        .upload-text {
+            color: var(--gray-medium);
+            font-size: 0.9rem;
+        }
+
+        .upload-box input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .preview-container {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .preview-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .image-preview {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .preview-item {
+            position: relative;
+            width: 120px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--gray-light);
+        }
+
+            .preview-item img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .preview-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Voting Section */
+        .voting-section {
+            display: none;
+        }
+
+            .voting-section.active-section {
+                display: block;
+                animation: fadeInUp 0.5s ease;
+            }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+            .dashboard-header h2 {
+                color: var(--primary-green);
+                font-size: 2.5rem;
+                margin-bottom: 0.5rem;
+                font-family: 'Poppins', sans-serif;
+            }
+
+        .user-info-card {
+            background: var(--primary-white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--primary-green);
+            transition: var(--transition);
+        }
+
+            .user-info-card:hover {
+                transform: translateY(-3px);
+                box-shadow: var(--shadow-lg);
+            }
+
+        .user-details h3 {
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray-medium);
+        }
+
+        .verification-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .verified {
+            background: rgba(0, 100, 0, 0.1);
+            color: var(--primary-green);
+        }
+
+        .pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        .voting-card {
+            background: var(--primary-white);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+            .voting-card:hover {
+                box-shadow: var(--shadow-lg);
+            }
+
+            .voting-card h3 {
+                color: var(--primary-green);
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+                border-bottom: 2px solid var(--gray-light);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+        .candidate-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .candidate-card {
+            border: 2px solid var(--gray-light);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            transition: var(--transition);
+            cursor: pointer;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .candidate-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(to right, var(--primary-green), var(--light-green));
+                transform: scaleX(0);
+                transition: transform 0.3s ease;
+            }
+
+            .candidate-card:hover {
+                border-color: var(--light-green);
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-md);
+            }
+
+                .candidate-card:hover::before {
+                    transform: scaleX(1);
+                }
+
+            .candidate-card.selected {
+                border-color: var(--primary-green);
+                background: linear-gradient(to bottom right, rgba(0, 100, 0, 0.05), rgba(76, 175, 80, 0.05));
+            }
+
+                .candidate-card.selected::before {
+                    transform: scaleX(1);
+                }
+
+        .candidate-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .candidate-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-green), var(--light-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .candidate-details h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .candidate-party {
+            color: var(--primary-green);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .candidate-symbol {
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .candidate-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .vote-btn-container {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+
+            .results-section.active-section {
+                display: block;
+                animation: fadeIn 0.5s ease;
+            }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 992px) {
+            .results-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .results-card {
+            background: var(--primary-white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+            .results-card:hover {
+                transform: translateY(-3px);
+                box-shadow: var(--shadow-lg);
+            }
+
+            .results-card h3 {
+                color: var(--primary-green);
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+                border-bottom: 2px solid var(--gray-light);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed var(--gray-light);
+            transition: var(--transition);
+        }
+
+            .result-item:hover {
+                background: rgba(0, 100, 0, 0.02);
+                padding: 1rem;
+                border-radius: 8px;
+            }
+
+        .result-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .result-rank {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            width: 30px;
+            text-align: center;
+        }
+
+        .result-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-green), var(--light-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .result-details h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .result-party {
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+        }
+
+        .progress-container {
+            flex: 2;
+            max-width: 300px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: var(--gray-light);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-green), var(--light-green));
+            border-radius: 5px;
+            transition: width 1s ease;
+        }
+
+        .vote-count {
+            font-weight: 600;
+            color: var(--primary-green);
+            min-width: 80px;
+            text-align: right;
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+            .stat-card:hover {
+                transform: scale(1.05);
+            }
+
+            .stat-card i {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+                color: var(--accent-gold);
+            }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--gray-dark);
+            color: var(--primary-white);
+            padding: 3rem 0 2rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .footer-links h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: var(--gray-light);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .footer-links a:hover {
+                color: var(--accent-gold);
+                transform: translateX(5px);
+            }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+            .modal.active {
+                display: flex;
+                animation: fadeIn 0.3s ease;
+            }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: slideInUp 0.3s ease;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-light);
+        }
+
+            .modal-header h3 {
+                color: var(--primary-green);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray-medium);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+            .close-modal:hover {
+                color: var(--accent-red);
+            }
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .text-green {
+            color: var(--primary-green);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideInRight 0.3s ease;
+        }
+
+        .alert-success {
+            background: rgba(0, 100, 0, 0.1);
+            color: var(--primary-green);
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .alert-error {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--accent-red);
+            border-left: 4px solid var(--accent-red);
+        }
+
+        .alert-info {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--accent-blue);
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border-left: 4px solid #ffc107;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 100, 0, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-green);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* File Upload Progress */
+        .upload-progress {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+        }
+
+        .progress-bar-upload {
+            height: 6px;
+            background: var(--gray-light);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill-upload {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-green), var(--light-green));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Image Validation */
+        .validation-message {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .validation-success {
+            background: rgba(0, 100, 0, 0.1);
+            color: var(--primary-green);
+            border-left: 3px solid var(--primary-green);
+        }
+
+        .validation-error {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--accent-red);
+            border-left: 3px solid var(--accent-red);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo" id="home-link">
+                <div class="logo-icon">
+                    <i class="fas fa-vote-yea"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Pak<span>Vote</span></h1>
+                    <p>Secure E-Voting System</p>
+                </div>
+            </a>
+            <nav class="nav-links">
+                <a href="#" data-section="home" id="nav-home" class="active">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="#" data-section="voting" id="nav-voting">
+                    <i class="fas fa-vote-yea"></i> Vote
+                </a>
+                <a href="#" data-section="results" id="nav-results">
+                    <i class="fas fa-chart-bar"></i> Results
+                </a>
+                <div class="user-profile" id="user-profile">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <div id="user-name">Guest</div>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Hero/Home Section -->
+            <section id="home-section" class="hero-section active-section">
+                <div class="hero-content">
+                    <h2>Secure Digital Voting for Pakistan</h2>
+                    <p>Participate in democratic elections from anywhere with our secure, transparent, and accessible e-voting platform.</p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="total-voters">0</span>
+                            <span class="stat-label">Registered Voters</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="votes-cast">0</span>
+                            <span class="stat-label">Votes Cast</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="turnout-rate">0%</span>
+                            <span class="stat-label">Voter Turnout</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 3rem;">
+                        <button id="get-started-btn" class="btn btn-small">Get Started <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Authentication Section -->
+            <section id="auth-section" class="auth-section">
+                <div class="auth-container">
+                    <div class="auth-card">
+                        <div class="auth-header">
+                            <h2>Welcome to PakVote</h2>
+                            <p>Login or register to continue</p>
+                            <div class="auth-tabs">
+                                <button class="auth-tab active" data-form="login">Login</button>
+                                <button class="auth-tab" data-form="register">Register</button>
+                            </div>
+                        </div>
+                        <div class="auth-body">
+                            <!-- Login Form -->
+                            <form id="login-form" class="auth-form active">
+                                <div class="form-group">
+                                    <label for="login-cnic">
+                                        <i class="fas fa-id-card"></i> CNIC Number
+                                    </label>
+                                    <input type="text" id="login-cnic" placeholder="35201-1234567-1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="login-password">
+                                        <i class="fas fa-lock"></i> Password
+                                    </label>
+                                    <input type="password" id="login-password" placeholder="Enter your password" required>
+                                    <button type="button" class="password-toggle" id="login-password-toggle">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div id="login-alert" class="alert hidden"></div>
+                                <button type="submit" class="btn" id="login-btn">
+                                    <span id="login-btn-text">Login</span>
+                                    <span class="loading hidden" id="login-loading"></span>
+                                </button>
+                                <div class="form-footer">
+                                    <p>Demo Accounts: 35201-1234567-1 (password: pakistan123) or 42201-7654321-9</p>
+                                </div>
+                            </form>
+
+                            <!-- Registration Form with CNIC Upload -->
+                            <form id="register-form" class="auth-form">
+                                <div class="form-group">
+                                    <label for="reg-name">
+                                        <i class="fas fa-user"></i> Full Name
+                                    </label>
+                                    <input type="text" id="reg-name" placeholder="Enter your full name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reg-cnic">
+                                        <i class="fas fa-id-card"></i> CNIC Number
+                                    </label>
+                                    <input type="text" id="reg-cnic" placeholder="35201-1234567-1" required>
+                                    <div id="cnic-validation" class="validation-message"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reg-dob">
+                                        <i class="fas fa-calendar"></i> Date of Birth
+                                    </label>
+                                    <input type="date" id="reg-dob" required>
+                                    <div id="age-warning" class="alert alert-warning hidden" style="margin-top: 0.5rem;">
+                                        <i class="fas fa-exclamation-triangle"></i> You must be 18 years or older to register.
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reg-province">
+                                        <i class="fas fa-map-marker-alt"></i> Province
+                                    </label>
+                                    <select id="reg-province" required>
+                                        <option value="">Select Province</option>
+                                        <option value="Punjab">Punjab</option>
+                                        <option value="Sindh">Sindh</option>
+                                        <option value="Khyber Pakhtunkhwa">Khyber Pakhtunkhwa</option>
+                                        <option value="Balochistan">Balochistan</option>
+                                        <option value="Gilgit-Baltistan">Gilgit-Baltistan</option>
+                                    </select>
+                                </div>
+
+                                <!-- CNIC Upload Section -->
+                                <div class="upload-section">
+                                    <div class="upload-title">
+                                        <i class="fas fa-camera"></i> CNIC Document Verification
+                                    </div>
+                                    <p style="color: var(--gray-medium); font-size: 0.9rem; margin-bottom: 1rem;">
+                                        Upload clear images of both sides of your CNIC for verification. Images should be clear, well-lit, and show all details.
+                                    </p>
+
+                                    <div class="upload-container">
+                                        <!-- Front Side Upload -->
+                                        <div class="upload-box" id="front-upload-box">
+                                            <div class="upload-icon">
+                                                <i class="fas fa-id-card"></i>
+                                            </div>
+                                            <div class="upload-text">
+                                                Click or drag to upload<br>
+                                                <strong>CNIC Front Side</strong>
+                                            </div>
+                                            <input type="file" id="cnic-front" accept="image/*" capture="environment">
+                                            <div id="front-validation" class="validation-message"></div>
+                                        </div>
+
+                                        <!-- Back Side Upload -->
+                                        <div class="upload-box" id="back-upload-box">
+                                            <div class="upload-icon">
+                                                <i class="fas fa-id-card-alt"></i>
+                                            </div>
+                                            <div class="upload-text">
+                                                Click or drag to upload<br>
+                                                <strong>CNIC Back Side</strong>
+                                            </div>
+                                            <input type="file" id="cnic-back" accept="image/*" capture="environment">
+                                            <div id="back-validation" class="validation-message"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Image Preview Container -->
+                                    <div class="preview-container">
+                                        <div class="preview-title">Uploaded Images:</div>
+                                        <div class="image-preview" id="image-preview">
+                                            <!-- Preview items will be added here -->
+                                        </div>
+                                    </div>
+
+                                    <!-- Upload Progress -->
+                                    <div class="upload-progress" id="upload-progress">
+                                        <div class="progress-info">
+                                            <span id="progress-text">Uploading...</span>
+                                            <span id="progress-percent">0%</span>
+                                        </div>
+                                        <div class="progress-bar-upload">
+                                            <div class="progress-fill-upload" id="progress-fill"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="reg-password">
+                                        <i class="fas fa-lock"></i> Password
+                                    </label>
+                                    <input type="password" id="reg-password" placeholder="Create a strong password" required>
+                                    <button type="button" class="password-toggle" id="reg-password-toggle">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reg-confirm-password">
+                                        <i class="fas fa-lock"></i> Confirm Password
+                                    </label>
+                                    <input type="password" id="reg-confirm-password" placeholder="Re-enter your password" required>
+                                </div>
+                                <div id="register-alert" class="alert hidden"></div>
+                                <button type="submit" class="btn" id="register-btn">
+                                    <span id="register-btn-text">Complete Registration</span>
+                                    <span class="loading hidden" id="register-loading"></span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Voting Section -->
+            <section id="voting-section" class="voting-section">
+                <div class="dashboard-header">
+                    <h2><i class="fas fa-vote-yea"></i> National Assembly Elections 2024</h2>
+                    <p>Select your preferred candidate for each position</p>
+                </div>
+
+                <div class="user-info-card">
+                    <div class="user-details">
+                        <h3><i class="fas fa-user"></i> <span id="user-greeting">Welcome, Guest!</span></h3>
+                        <div class="user-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-id-card"></i>
+                                <span id="user-cnic">CNIC: Not Available</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span id="user-province">Province: Not Available</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-check-circle"></i>
+                                <span class="verification-badge verified" id="verification-status">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="voting-status">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> You have <strong id="vote-status">not voted</strong> in this election.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="voting-card">
+                    <h3><i class="fas fa-users"></i> National Assembly - Constituency NA-120</h3>
+                    <p>Select one candidate from the list below. Click on a candidate card to select.</p>
+
+                    <div id="candidate-list" class="candidate-list">
+                        <!-- Candidates will be loaded here -->
+                    </div>
+
+                    <div id="vote-confirmation" class="hidden">
+                        <div class="alert alert-info" style="margin-top: 2rem;">
+                            <h4><i class="fas fa-check-circle"></i> Confirm Your Vote</h4>
+                            <p>You have selected: <strong id="selected-candidate-name">No candidate selected</strong></p>
+                            <p>Once submitted, your vote cannot be changed. Are you sure you want to proceed?</p>
+                            <div class="vote-btn-container">
+                                <button id="confirm-vote-btn" class="btn">Yes, Submit My Vote</button>
+                                <button id="cancel-vote-btn" class="btn btn-secondary" style="margin-top: 10px;">No, Let me reconsider</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="vote-btn-container">
+                        <button id="submit-vote-btn" class="btn" disabled>
+                            <i class="fas fa-paper-plane"></i> Submit Vote
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="results-section" class="results-section">
+                <div class="dashboard-header">
+                    <h2><i class="fas fa-chart-bar"></i> Election Results</h2>
+                    <p>Live vote counts for National Assembly Elections</p>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="fas fa-chart-line"></i> These results are based on votes cast through the PakVote system. Final official results will be announced by the Election Commission of Pakistan.
+                </div>
+
+                <div class="results-container">
+                    <div class="results-card">
+                        <h3><i class="fas fa-trophy"></i> National Assembly Results</h3>
+                        <div id="results-list">
+                            <!-- Results will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="results-card">
+                        <h3><i class="fas fa-chart-pie"></i> Voting Statistics</h3>
+                        <div id="stats-container" class="stats-grid">
+                            <!-- Statistics will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-vote-yea" style="font-size: 2rem; color: var(--accent-gold);"></i>
+                    <div>
+                        <h3 style="color: white; margin-bottom: 0.5rem;">PakVote</h3>
+                        <p style="color: var(--gray-light); font-size: 0.9rem;">Secure Digital Voting Platform for Pakistan</p>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#" data-section="home"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#" data-section="voting"><i class="fas fa-vote-yea"></i> Voting</a></li>
+                        <li><a href="#" data-section="results"><i class="fas fa-chart-bar"></i> Results</a></li>
+                        <li><a href="#" id="footer-about"><i class="fas fa-info-circle"></i> About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="security.html"><i class="fas fa-shield-alt"></i> Security</a></li>
+                        <li><a href="#"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                        <li><a href="#contact"><i class="fas fa-file-contract"></i> Contact</a></li>
+                        <li><a href="#"><i class="fas fa-lock"></i> Privacy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-envelope"></i> support@pakvote.pk</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> +92-51-1234567</a></li>
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Islamabad, Pakistan</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 PakVote - Secure E-Voting System for Pakistan. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for About -->
+    <div class="modal" id="about-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-info-circle"></i> About PakVote</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <p>PakVote is a modern, secure e-voting platform designed specifically for Pakistan's electoral needs. Our system ensures:</p>
+            <ul style="margin: 1rem 0 1rem 1.5rem;">
+                <li>Secure voter authentication</li>
+                <li>Transparent vote counting</li>
+                <li>Real-time results</li>
+                <li>Accessibility for all citizens</li>
+                <li>Compliance with electoral laws</li>
+            </ul>
+            <p>This is a demonstration system for educational purposes only.</p>
+        </div>
+    </div>
+
+    <!-- Toastify Library -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        // Application State
+        const state = {
+        currentUser: null,
+        candidates: [],
+        votes: {},
+        hasVoted: false,
+        currentSection: 'home',
+        isLoggedIn: false,
+        cnicImages: {
+        front: null,
+        back: null
+        }
+        };
+
+        // Initialize application data
+        function initializeApp() {
+        // Initialize candidates
+        state.candidates = [
+        {
+        id: 1,
+        name: "Imran Khan",
+        party: "Pakistan Tehreek-e-Insaf",
+        symbol: "Bat",
+        avatar: "IK",
+        color: "#008000",
+        votes: 0
+        },
+        {
+        id: 2,
+        name: "Nawaz Sharif",
+        party: "Pakistan Muslim League (N)",
+        symbol: "Lion",
+        avatar: "NS",
+        color: "#FF0000",
+        votes: 0
+        },
+        {
+        id: 3,
+        name: "Bilawal Bhutto",
+        party: "Pakistan Peoples Party",
+        symbol: "Arrow",
+        avatar: "BB",
+        color: "#0000FF",
+        votes: 0
+        },
+        {
+        id: 4,
+        name: "Hafiz Naeem Ur Rehman",
+        party: "Jamaat-e-Islami",
+        symbol: "Book",
+        avatar: "HR",
+        color: "#800080",
+        votes: 0
+        }
+        ];
+
+        // Load votes from localStorage
+        const savedVotes = localStorage.getItem('pakvote_votes');
+        if (savedVotes) {
+        state.votes = JSON.parse(savedVotes);
+        state.candidates.forEach(candidate => {
+        candidate.votes = state.votes[candidate.id] || 0;
+        });
+        }
+
+        // Initialize users if not exists
+        const users = localStorage.getItem('pakvote_users');
+        if (!users) {
+        const demoUsers = [
+        {
+        id: 1,
+        name: "Ahmed Raza",
+        cnic: "35201-1234567-1",
+        dob: "1990-05-15",
+        province: "Punjab",
+        password: "pakistan123",
+        hasVoted: false,
+        isVerified: true,
+        cnicImages: {
+        front: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect width='300' height='200' fill='%23f0f0f0'/%3E%3Ctext x='150' y='100' text-anchor='middle' font-family='Arial' font-size='16' fill='%23333'%3ECNIC Front Side%3C/text%3E%3Ctext x='150' y='120' text-anchor='middle' font-family='Arial' font-size='12' fill='%23666'%3EDemo Image%3C/text%3E%3C/svg%3E",
+        back: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect width='300' height='200' fill='%23e0e0e0'/%3E%3Ctext x='150' y='100' text-anchor='middle' font-family='Arial' font-size='16' fill='%23333'%3ECNIC Back Side%3C/text%3E%3Ctext x='150' y='120' text-anchor='middle' font-family='Arial' font-size='12' fill='%23666'%3EDemo Image%3C/text%3E%3C/svg%3E"
+        }
+        },
+        {
+        id: 2,
+        name: "Ayesha Malik",
+        cnic: "42201-7654321-9",
+        dob: "1985-11-22",
+        province: "Sindh",
+        password: "pakistan123",
+        hasVoted: false,
+        isVerified: true,
+        cnicImages: {
+        front: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect width='300' height='200' fill='%23f0f0f0'/%3E%3Ctext x='150' y='100' text-anchor='middle' font-family='Arial' font-size='16' fill='%23333'%3ECNIC Front Side%3C/text%3E%3Ctext x='150' y='120' text-anchor='middle' font-family='Arial' font-size='12' fill='%23666'%3EDemo Image%3C/text%3E%3C/svg%3E",
+        back: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect width='300' height='200' fill='%23e0e0e0'/%3E%3Ctext x='150' y='100' text-anchor='middle' font-family='Arial' font-size='16' fill='%23333'%3ECNIC Back Side%3C/text%3E%3Ctext x='150' y='120' text-anchor='middle' font-family='Arial' font-size='12' fill='%23666'%3EDemo Image%3C/text%3E%3C/svg%3E"
+        }
+        }
+        ];
+        localStorage.setItem('pakvote_users', JSON.stringify(demoUsers));
+        }
+
+        // Check for existing session
+        const currentUser = localStorage.getItem('pakvote_currentUser');
+        if (currentUser) {
+        state.currentUser = JSON.parse(currentUser);
+        state.isLoggedIn = true;
+        updateUserInterface();
+        showSection('home');
+        } else {
+        showSection('home');
+        }
+
+        // Load initial data
+        updateHomeStats();
+        loadCandidates();
+        loadResults();
+        loadStatistics();
+
+        // Initialize CNIC upload functionality
+        initializeCnicUpload();
+        }
+
+        // DOM Elements
+        const sections = {
+        home: document.getElementById('home-section'),
+        auth: document.getElementById('auth-section'),
+        voting: document.getElementById('voting-section'),
+        results: document.getElementById('results-section')
+        };
+
+        const navLinks = {
+        home: document.getElementById('nav-home'),
+        voting: document.getElementById('nav-voting'),
+        results: document.getElementById('nav-results')
+        };
+
+        // Initialize CNIC Upload Functionality
+        function initializeCnicUpload() {
+        const frontUploadBox = document.getElementById('front-upload-box');
+        const backUploadBox = document.getElementById('back-upload-box');
+        const frontInput = document.getElementById('cnic-front');
+        const backInput = document.getElementById('cnic-back');
+        const imagePreview = document.getElementById('image-preview');
+
+        // Setup drag and drop for front upload
+        setupDragAndDrop(frontUploadBox, frontInput, 'front');
+        setupDragAndDrop(backUploadBox, backInput, 'back');
+
+        // Handle file selection for front
+        frontInput.addEventListener('change', (e) => {
+        handleFileSelect(e, 'front');
+        });
+
+        // Handle file selection for back
+        backInput.addEventListener('change', (e) => {
+        handleFileSelect(e, 'back');
+        });
+
+        // CNIC format validation
+        const cnicInput = document.getElementById('reg-cnic');
+        cnicInput.addEventListener('blur', validateCNICFormat);
+        }
+
+        // Setup drag and drop functionality
+        function setupDragAndDrop(uploadBox, fileInput, side) {
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadBox.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+        uploadBox.addEventListener(eventName, () => {
+        uploadBox.classList.add('dragover');
+        }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+        uploadBox.addEventListener(eventName, () => {
+        uploadBox.classList.remove('dragover');
+        }, false);
+        });
+
+        uploadBox.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files.length > 0) {
+        fileInput.files = files;
+        handleFileSelect({ target: fileInput }, side);
+        }
+        }, false);
+        }
+
+        // Handle file selection
+        function handleFileSelect(event, side) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Validate file
+        if (!validateImageFile(file, side)) {
+        return;
+        }
+
+        // Show upload progress
+        showUploadProgress(side);
+
+        // Simulate upload process
+        simulateUpload(file, side);
+        }
+
+        // Validate image file
+        function validateImageFile(file, side) {
+        const validationDiv = document.getElementById(`${side}-validation`);
+        const maxSize = 5 * 1024 * 1024; // 5MB
+
+        // Check file type
+        if (!file.type.match('image.*')) {
+        validationDiv.textContent = 'Please upload an image file (JPEG, PNG, etc.)';
+        validationDiv.className = 'validation-message validation-error';
+        validationDiv.style.display = 'block';
+        return false;
+        }
+
+        // Check file size
+        if (file.size > maxSize) {
+        validationDiv.textContent = 'File size must be less than 5MB';
+        validationDiv.className = 'validation-message validation-error';
+        validationDiv.style.display = 'block';
+        return false;
+        }
+
+        // Check image dimensions (simulated)
+        const img = new Image();
+        img.onload = function() {
+        if (this.width < 300 || this.height < 200) {
+        validationDiv.textContent = 'Image resolution is too low. Please upload a clearer image.';
+        validationDiv.className = 'validation-message validation-error';
+        validationDiv.style.display = 'block';
+        return false;
+        }
+        };
+        img.src = URL.createObjectURL(file);
+
+        // Clear previous validation message
+        validationDiv.textContent = '';
+        validationDiv.style.display = 'none';
+
+        return true;
+        }
+
+        // Show upload progress
+        function showUploadProgress(side) {
+        const progressDiv = document.getElementById('upload-progress');
+        const progressText = document.getElementById('progress-text');
+        const progressPercent = document.getElementById('progress-percent');
+        const progressFill = document.getElementById('progress-fill');
+
+        progressText.textContent = `Uploading CNIC ${side === 'front' ? 'Front' : 'Back'} Side...`;
+        progressDiv.style.display = 'block';
+
+        // Simulate progress
+        let progress = 0;
+        const interval = setInterval(() => {
+        progress += 5;
+        progressPercent.textContent = `${progress}%`;
+        progressFill.style.width = `${progress}%`;
+
+        if (progress >= 100) {
+        clearInterval(interval);
+        setTimeout(() => {
+        progressDiv.style.display = 'none';
+        progressFill.style.width = '0%';
+        }, 500);
+        }
+        }, 100);
+        }
+
+        // Simulate file upload
+        function simulateUpload(file, side) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+        // Store image in state
+        state.cnicImages[side] = e.target.result;
+
+        // Add to preview
+        addImagePreview(file, side, e.target.result);
+
+        // Show success message
+        const validationDiv = document.getElementById(`${side}-validation`);
+        validationDiv.textContent = '✓ Image uploaded successfully';
+        validationDiv.className = 'validation-message validation-success';
+        validationDiv.style.display = 'block';
+
+        // Hide success message after 3 seconds
+        setTimeout(() => {
+        validationDiv.style.display = 'none';
+        }, 3000);
+        };
+
+        reader.readAsDataURL(file);
+        }
+
+        // Add image preview
+        function addImagePreview(file, side, dataUrl) {
+        const previewContainer = document.getElementById('image-preview');
+
+        // Remove existing preview for this side
+        const existingPreview = document.getElementById(`preview-${side}`);
+        if (existingPreview) {
+        existingPreview.remove();
+        }
+
+        // Create preview item
+        const previewItem = document.createElement('div');
+        previewItem.className = 'preview-item';
+        previewItem.id = `preview-${side}`;
+
+        const img = document.createElement('img');
+        img.src = dataUrl;
+        img.alt = `CNIC ${side} Side`;
+
+        const label = document.createElement('div');
+        label.className = 'preview-label';
+        label.textContent = side === 'front' ? 'Front Side' : 'Back Side';
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.innerHTML = '×';
+        removeBtn.onclick = () => removeImagePreview(side);
+
+        previewItem.appendChild(img);
+        previewItem.appendChild(label);
+        previewItem.appendChild(removeBtn);
+
+        previewContainer.appendChild(previewItem);
+        }
+
+        // Remove image preview
+        function removeImagePreview(side) {
+        // Remove from state
+        state.cnicImages[side] = null;
+
+        // Remove preview element
+        const previewItem = document.getElementById(`preview-${side}`);
+        if (previewItem) {
+        previewItem.remove();
+        }
+
+        // Clear file input
+        const fileInput = document.getElementById(`cnic-${side}`);
+        fileInput.value = '';
+
+        // Clear validation message
+        const validationDiv = document.getElementById(`${side}-validation`);
+        validationDiv.style.display = 'none';
+        }
+
+        // Validate CNIC format
+        function validateCNICFormat() {
+        const cnicInput = document.getElementById('reg-cnic');
+        const cnicValue = cnicInput.value.trim();
+        const validationDiv = document.getElementById('cnic-validation');
+
+        // CNIC regex pattern: XXXXX-XXXXXXX-X
+        const cnicPattern = /^\d{5}-\d{7}-\d{1}$/;
+
+        if (!cnicPattern.test(cnicValue)) {
+        validationDiv.textContent = 'Please enter a valid CNIC in format: XXXXX-XXXXXXX-X';
+        validationDiv.className = 'validation-message validation-error';
+        validationDiv.style.display = 'block';
+        return false;
+        } else {
+        validationDiv.textContent = '✓ Valid CNIC format';
+        validationDiv.className = 'validation-message validation-success';
+        validationDiv.style.display = 'block';
+        return true;
+        }
+        }
+
+        // Show specific section
+        function showSection(section) {
+        // Hide all sections
+        Object.values(sections).forEach(sec => {
+        sec.classList.remove('active-section');
+        });
+
+        // Remove active class from all nav links
+        Object.values(navLinks).forEach(link => {
+        link.classList.remove('active');
+        });
+
+        // Show requested section
+        if (sections[section]) {
+        sections[section].classList.add('active-section');
+        if (navLinks[section]) {
+        navLinks[section].classList.add('active');
+        }
+        state.currentSection = section;
+        }
+
+        // If trying to access voting/results without login, show auth
+        if ((section === 'voting' || section === 'results') && !state.isLoggedIn) {
+        showSection('auth');
+        return;
+        }
+
+        // Update section-specific content
+        if (section === 'voting') {
+        updateVotingInterface();
+        } else if (section === 'results') {
+        updateResults();
+        } else if (section === 'home') {
+        updateHomeStats();
+        }
+        }
+
+        // Update home statistics
+        function updateHomeStats() {
+        const users = JSON.parse(localStorage.getItem('pakvote_users') || '[]');
+        const totalVotes = Object.values(state.votes).reduce((a, b) => a + b, 0);
+
+        document.getElementById('total-voters').textContent = users.length;
+        document.getElementById('votes-cast').textContent = totalVotes;
+        document.getElementById('turnout-rate').textContent = users.length > 0
+        ? Math.round((totalVotes / users.length) * 100) + '%'
+        : '0%';
+        }
+
+        // Update user interface
+        function updateUserInterface() {
+        if (state.currentUser) {
+        document.getElementById('user-name').textContent = state.currentUser.name.split(' ')[0];
+        document.getElementById('user-avatar').textContent = state.currentUser.name.charAt(0);
+        document.getElementById('nav-voting').style.display = 'flex';
+        document.getElementById('nav-results').style.display = 'flex';
+        } else {
+        document.getElementById('user-name').textContent = 'Guest';
+        document.getElementById('user-avatar').textContent = 'G';
+        document.getElementById('nav-voting').style.display = 'none';
+        document.getElementById('nav-results').style.display = 'none';
+        }
+        }
+
+        // Update voting interface
+        function updateVotingInterface() {
+        if (!state.currentUser) return;
+
+        document.getElementById('user-greeting').textContent = `Welcome, ${state.currentUser.name}!`;
+        document.getElementById('user-cnic').textContent = `CNIC: ${state.currentUser.cnic}`;
+        document.getElementById('user-province').textContent = `Province: ${state.currentUser.province}`;
+
+        const verificationStatus = document.getElementById('verification-status');
+        verificationStatus.textContent = state.currentUser.isVerified ? 'Verified' : 'Pending';
+        verificationStatus.className = `verification-badge ${state.currentUser.isVerified ? 'verified' : 'pending'}`;
+
+        const voteStatus = document.getElementById('vote-status');
+        if (state.currentUser.hasVoted) {
+        voteStatus.innerHTML = '<span style="color: var(--accent-red);">already voted</span>';
+        document.getElementById('submit-vote-btn').disabled = true;
+        document.getElementById('submit-vote-btn').innerHTML = '<i class="fas fa-check-circle"></i> Vote Submitted';
+        } else {
+        voteStatus.innerHTML = '<span style="color: var(--primary-green);">not voted yet</span>';
+        document.getElementById('submit-vote-btn').disabled = false;
+        }
+        }
+
+        // Load candidates for voting
+        function loadCandidates() {
+        const container = document.getElementById('candidate-list');
+        container.innerHTML = '';
+
+        state.candidates.forEach(candidate => {
+        const card = document.createElement('div');
+        card.className = 'candidate-card';
+        card.dataset.id = candidate.id;
+
+        card.innerHTML = `
+        <div class="candidate-info">
+        <div class="candidate-avatar" style="background: ${candidate.color}">
+        ${candidate.avatar}
+        </div>
+        <div class="candidate-details">
+        <h4>${candidate.name}</h4>
+        <p class="candidate-party">${candidate.party}</p>
+        <p class="candidate-symbol"><i class="fas fa-certificate"></i> Symbol: ${candidate.symbol}</p>
+        </div>
+        </div>
+        <div class="candidate-stats">
+        <div class="vote-count">
+        <i class="fas fa-vote-yea"></i> ${candidate.votes} votes
+        </div>
+        <button class="btn btn-small select-candidate">Select</button>
+        </div>
+        `;
+
+        container.appendChild(card);
+        });
+
+        // Add event listeners for selection
+        document.querySelectorAll('.select-candidate').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const card = this.closest('.candidate-card');
+        selectCandidate(parseInt(card.dataset.id));
+        });
+        });
+
+        // Add click event to cards
+        document.querySelectorAll('.candidate-card').forEach(card => {
+        card.addEventListener('click', function() {
+        selectCandidate(parseInt(this.dataset.id));
+        });
+        });
+        }
+
+        // Select a candidate
+        function selectCandidate(candidateId) {
+        if (state.currentUser?.hasVoted) {
+        showToast('You have already voted!', 'error');
+        return;
+        }
+
+        // Remove previous selection
+        document.querySelectorAll('.candidate-card').forEach(card => {
+        card.classList.remove('selected');
+        });
+
+        // Add selection to clicked card
+        const selectedCard = document.querySelector(`.candidate-card[data-id="${candidateId}"]`);
+        selectedCard.classList.add('selected');
+
+        // Update selected candidate info
+        const candidate = state.candidates.find(c => c.id === candidateId);
+        document.getElementById('selected-candidate-name').textContent = `${candidate.name} (${candidate.party})`;
+
+        // Enable submit button
+        document.getElementById('submit-vote-btn').disabled = false;
+        document.getElementById('vote-confirmation').classList.remove('hidden');
+        }
+
+        // Submit vote
+        function submitVote() {
+        if (!state.currentUser) return;
+
+        const selectedCard = document.querySelector('.candidate-card.selected');
+        if (!selectedCard) {
+        showToast('Please select a candidate first!', 'error');
+        return;
+        }
+
+        const candidateId = parseInt(selectedCard.dataset.id);
+        const candidate = state.candidates.find(c => c.id === candidateId);
+
+        // Update vote count
+        candidate.votes++;
+        state.votes[candidate.id] = candidate.votes;
+        localStorage.setItem('pakvote_votes', JSON.stringify(state.votes));
+
+        // Mark user as voted
+        const users = JSON.parse(localStorage.getItem('pakvote_users'));
+        const userIndex = users.findIndex(u => u.cnic === state.currentUser.cnic);
+        if (userIndex !== -1) {
+        users[userIndex].hasVoted = true;
+        localStorage.setItem('pakvote_users', JSON.stringify(users));
+        state.currentUser.hasVoted = true;
+        localStorage.setItem('pakvote_currentUser', JSON.stringify(state.currentUser));
+        }
+
+        // Update UI
+        updateVotingInterface();
+        document.getElementById('vote-confirmation').classList.add('hidden');
+        document.querySelectorAll('.candidate-card').forEach(card => {
+        card.classList.remove('selected');
+        });
+
+        // Show success message
+        showToast(`Vote submitted successfully for ${candidate.name}!`, 'success');
+
+        // Update results
+        updateResults();
+        updateHomeStats();
+        }
+
+        // Load and update results
+        function loadResults() {
+        const container = document.getElementById('results-list');
+        if (!container) return;
+
+        // Sort candidates by votes
+        const sortedCandidates = [...state.candidates].sort((a, b) => b.votes - a.votes);
+        const totalVotes = sortedCandidates.reduce((sum, c) => sum + c.votes, 0);
+
+        container.innerHTML = '';
+        sortedCandidates.forEach((candidate, index) => {
+        const percentage = totalVotes > 0 ? Math.round((candidate.votes / totalVotes) * 100) : 0;
+
+        const item = document.createElement('div');
+        item.className = 'result-item';
+        item.innerHTML = `
+        <div class="result-info">
+        <div class="result-rank">${index + 1}</div>
+        <div class="result-avatar" style="background: ${candidate.color}">
+        ${candidate.avatar}
+        </div>
+        <div class="result-details">
+        <h4>${candidate.name}</h4>
+        <p class="result-party">${candidate.party} • ${candidate.symbol}</p>
+        </div>
+        </div>
+        <div class="progress-container">
+        <div class="progress-bar">
+        <div class="progress-fill" style="width: ${percentage}%"></div>
+        </div>
+        <div class="vote-count">${candidate.votes} votes (${percentage}%)</div>
+        </div>
+        `;
+        container.appendChild(item);
+        });
+        }
+
+        // Load statistics
+        function loadStatistics() {
+        const container = document.getElementById('stats-container');
+        if (!container) return;
+
+        const users = JSON.parse(localStorage.getItem('pakvote_users') || '[]');
+        const totalVotes = Object.values(state.votes).reduce((a, b) => a + b, 0);
+        const votedUsers = users.filter(u => u.hasVoted).length;
+        const verifiedUsers = users.filter(u => u.isVerified).length;
+
+        container.innerHTML = `
+        <div class="stat-card">
+        <i class="fas fa-users"></i>
+        <span class="stat-number">${users.length}</span>
+        <span class="stat-label">Total Voters</span>
+        </div>
+        <div class="stat-card">
+        <i class="fas fa-vote-yea"></i>
+        <span class="stat-number">${totalVotes}</span>
+        <span class="stat-label">Votes Cast</span>
+        </div>
+        <div class="stat-card">
+        <i class="fas fa-check-circle"></i>
+        <span class="stat-number">${verifiedUsers}</span>
+        <span class="stat-label">Verified Voters</span>
+        </div>
+        <div class="stat-card">
+        <i class="fas fa-chart-line"></i>
+        <span class="stat-number">${users.length > 0 ? Math.round((votedUsers / users.length) * 100) : 0}%</span>
+        <span class="stat-label">Turnout Rate</span>
+        </div>
+        `;
+        }
+
+        // Update results (real-time)
+        function updateResults() {
+        loadResults();
+        loadStatistics();
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'info') {
+        const backgroundColor = type === 'success' ? '#006400' :
+        type === 'error' ? '#dc3545' :
+        type === 'warning' ? '#ffc107' : '#007bff';
+
+        Toastify({
+        text: message,
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        backgroundColor: backgroundColor,
+        stopOnFocus: true
+        }).showToast();
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+        // Initialize app
+        initializeApp();
+
+        // Navigation links
+        document.getElementById('home-link').addEventListener('click', (e) => {
+        e.preventDefault();
+        showSection('home');
+        });
+
+        document.getElementById('nav-home').addEventListener('click', (e) => {
+        e.preventDefault();
+        showSection('home');
+        });
+
+        document.getElementById('nav-voting').addEventListener('click', (e) => {
+        e.preventDefault();
+        showSection('voting');
+        });
+
+        document.getElementById('nav-results').addEventListener('click', (e) => {
+        e.preventDefault();
+        showSection('results');
+        });
+
+        // Get started button
+        document.getElementById('get-started-btn').addEventListener('click', () => {
+        if (state.isLoggedIn) {
+        showSection('voting');
+        } else {
+        showSection('auth');
+        }
+        });
+
+        // Auth tabs
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+        const formId = this.dataset.form;
+
+        // Update active tab
+        document.querySelectorAll('.auth-tab').forEach(t => {
+        t.classList.remove('active');
+        });
+        this.classList.add('active');
+
+        // Show corresponding form
+        document.querySelectorAll('.auth-form').forEach(form => {
+        form.classList.remove('active');
+        });
+        document.getElementById(`${formId}-form`).classList.add('active');
+        });
+        });
+
+        // Password toggle
+        document.getElementById('login-password-toggle').addEventListener('click', function() {
+        const passwordInput = document.getElementById('login-password');
+        const icon = this.querySelector('i');
+        if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+        } else {
+        passwordInput.type = 'password';
+        icon.className = 'fas fa-eye';
+        }
+        });
+
+        document.getElementById('reg-password-toggle').addEventListener('click', function() {
+        const passwordInput = document.getElementById('reg-password');
+        const icon = this.querySelector('i');
+        if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+        } else {
+        passwordInput.type = 'password';
+        icon.className = 'fas fa-eye';
+        }
+        });
+
+        // Age validation
+        document.getElementById('reg-dob').addEventListener('change', function() {
+        const dob = new Date(this.value);
+        const age = new Date().getFullYear() - dob.getFullYear();
+        const warning = document.getElementById('age-warning');
+        if (age < 18) {
+        warning.classList.remove('hidden');
+        } else {
+        warning.classList.add('hidden');
+        }
+        });
+
+        // Login form
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const cnic = document.getElementById('login-cnic').value;
+        const password = document.getElementById('login-password').value;
+        const alertDiv = document.getElementById('login-alert');
+        const submitBtn = document.getElementById('login-btn');
+        const btnText = document.getElementById('login-btn-text');
+        const loading = document.getElementById('login-loading');
+
+        // Validation
+        if (!cnic || !password) {
+        alertDiv.textContent = 'Please fill in all fields';
+        alertDiv.className = 'alert alert-error';
+        alertDiv.classList.remove('hidden');
+        return;
+        }
+
+        // CNIC format validation
+        const cnicRegex = /^\d{5}-\d{7}-\d{1}$/;
+        if (!cnicRegex.test(cnic)) {
+        alertDiv.textContent = 'Please enter a valid CNIC (format: XXXXX-XXXXXXX-X)';
+        alertDiv.className = 'alert alert-error';
+        alertDiv.classList.remove('hidden');
+        return;
+        }
+
+        // Show loading
+        btnText.classList.add('hidden');
+        loading.classList.remove('hidden');
+        submitBtn.disabled = true;
+
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // Check credentials
+        const users = JSON.parse(localStorage.getItem('pakvote_users') || '[]');
+        const user = users.find(u => u.cnic === cnic && u.password === password);
+
+        if (user) {
+        // Login successful
+        state.currentUser = user;
+        state.isLoggedIn = true;
+        localStorage.setItem('pakvote_currentUser', JSON.stringify(user));
+
+        alertDiv.textContent = 'Login successful!';
+        alertDiv.className = 'alert alert-success';
+        alertDiv.classList.remove('hidden');
+
+        // Update UI
+        updateUserInterface();
+        updateVotingInterface();
+
+        // Redirect to voting
+        setTimeout(() => {
+        showSection('voting');
+        this.reset();
+        alertDiv.classList.add('hidden');
+        }, 1000);
+        } else {
+        // Login failed
+        alertDiv.textContent = 'Invalid CNIC or password';
+        alertDiv.className = 'alert alert-error';
+        alertDiv.classList.remove('hidden');
+        }
+
+        // Reset button
+        btnText.classList.remove('hidden');
+        loading.classList.add('hidden');
+        submitBtn.disabled = false;
+        });
+
+        // Registration form
+        document.getElementById('register-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('reg-name').value;
+        const cnic = document.getElementById('reg-cnic').value;
+        const dob = document.getElementById('reg-dob').value;
+        const province = document.getElementById('reg-province').value;
+        const password = document.getElementById('reg-password').value;
+        const confirmPassword = document.getElementById('reg-confirm-password').value;
+        const alertDiv = document.getElementById('register-alert');
+        const submitBtn = document.getElementById('register-btn');
+        const btnText = document.getElementById('register-btn-text');
+        const loading = document.getElementById('register-loading');
+
+        // Validation
+        if (!name || !cnic || !dob || !province || !password || !confirmPassword) {
+        alertDiv.textContent = 'Please fill in all fields';
+        alertDiv.className = 'alert alert-error';
+        alertDiv.classList.remove('hidden');
+        return;
+        }
+
+        // Age validation
+        const age = new Date().getFullYear() - new Date(dob).getFullYear();
+        if (age < 18) {
+        alertDiv.textContent = 'You must be 18 years or older to register';
+        alertDiv.className = 'alert alert-error';
+        alertDiv.classList.remove('hidden');
+        return;
+        }
+
+        // CNIC format validation
+        const cnicRegex = /^\d{5}-\d{7}-\d{1}$/;
+        if (!cnicRegex.test(cnic)) {
+        alertDiv.textContent = 'Please enter a valid CNIC (format: XXXXX-XXXXXXX-X)';
+        alertDiv.className = 'alert alert-error';
+        alertDiv.classList.remove('hidden');
+        return;
+        }
+
+        // CNIC image validation
+        if (!state.cnicImages.front || !state.cnicImages.back) {
+        alertDiv.textContent = 'Please upload both front and back sides of your CNIC';
+        alertDiv.className = 'alert alert-error';
+        alertDiv.classList.remove('hidden');
+        return;
+        }
+
+        // Password validation
+        if (password.length < 6) {
+        alertDiv.textContent = 'Password must be at least 6 characters long';
+        alertDiv.className = 'alert alert-error';
+        alertDiv.classList.remove('hidden');
+        return;
+        }
+
+        if (password !== confirmPassword) {
+        alertDiv.textContent = 'Passwords do not match';
+        alertDiv.className = 'alert alert-error';
+        alertDiv.classList.remove('hidden');
+        return;
+        }
+
+        // Check if user already exists
+        const users = JSON.parse(localStorage.getItem('pakvote_users') || '[]');
+        if (users.find(u => u.cnic === cnic)) {
+        alertDiv.textContent = 'User with this CNIC already exists';
+        alertDiv.className = 'alert alert-error';
+        alertDiv.classList.remove('hidden');
+        return;
+        }
+
+        // Show loading
+        btnText.classList.add('hidden');
+        loading.classList.remove('hidden');
+        submitBtn.disabled = true;
+
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // Create new user with CNIC images
+        const newUser = {
+        id: users.length + 1,
+        name,
+        cnic,
+        dob,
+        province,
+        password,
+        hasVoted: false,
+        isVerified: false, // Initially not verified until admin approval
+        cnicImages: {
+        front: state.cnicImages.front,
+        back: state.cnicImages.back
+        },
+        registrationDate: new Date().toISOString()
+        };
+
+        users.push(newUser);
+        localStorage.setItem('pakvote_users', JSON.stringify(users));
+
+        // Auto login
+        state.currentUser = newUser;
+        state.isLoggedIn = true;
+        localStorage.setItem('pakvote_currentUser', JSON.stringify(newUser));
+
+        alertDiv.textContent = 'Registration successful! Your CNIC images have been submitted for verification. You can vote once verified.';
+        alertDiv.className = 'alert alert-success';
+        alertDiv.classList.remove('hidden');
+
+        // Update UI
+        updateUserInterface();
+        updateVotingInterface();
+
+        // Reset CNIC images
+        state.cnicImages = { front: null, back: null };
+        document.getElementById('image-preview').innerHTML = '';
+
+        // Redirect to home
+        setTimeout(() => {
+        showSection('home');
+        this.reset();
+        alertDiv.classList.add('hidden');
+
+        // Reset auth tab to login
+        document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelector('.auth-tab[data-form="login"]').classList.add('active');
+        document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+        document.getElementById('login-form').classList.add('active');
+        }, 3000);
+
+        // Reset button
+        btnText.classList.remove('hidden');
+        loading.classList.add('hidden');
+        submitBtn.disabled = false;
+        });
+
+        // Voting buttons
+        document.getElementById('submit-vote-btn').addEventListener('click', function() {
+        const selectedCard = document.querySelector('.candidate-card.selected');
+        if (!selectedCard) {
+        showToast('Please select a candidate first!', 'error');
+        return;
+        }
+        document.getElementById('vote-confirmation').classList.remove('hidden');
+        });
+
+        document.getElementById('confirm-vote-btn').addEventListener('click', function() {
+        submitVote();
+        });
+
+        document.getElementById('cancel-vote-btn').addEventListener('click', function() {
+        document.getElementById('vote-confirmation').classList.add('hidden');
+        });
+
+        // User profile dropdown
+        document.getElementById('user-profile').addEventListener('click', function() {
+        if (!state.isLoggedIn) {
+        showSection('auth');
+        } else {
+        // Simple logout on click for demo
+        if (confirm('Are you sure you want to logout?')) {
+        state.currentUser = null;
+        state.isLoggedIn = false;
+        localStorage.removeItem('pakvote_currentUser');
+        updateUserInterface();
+        showSection('home');
+        showToast('Logged out successfully', 'success');
+        }
+        }
+        });
+
+        // Footer links
+        document.querySelectorAll('.footer-links a[data-section]').forEach(link => {
+        link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const section = this.dataset.section;
+        showSection(section);
+        });
+        });
+
+        document.getElementById('footer-about').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('about-modal').classList.add('active');
+        });
+
+        // Modal close
+        document.querySelectorAll('.close-modal').forEach(btn => {
+        btn.addEventListener('click', function() {
+        document.getElementById('about-modal').classList.remove('active');
+        });
+        });
+
+        // Close modal on background click
+        document.getElementById('about-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+        this.classList.remove('active');
+        }
+        });
+        });
+    </script>
+</body>
+</html>
