@@ -8,6 +8,485 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
+        /* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+
+/* Responsive Breakpoints */
+@media (max-width: 1200px) {
+    .container {
+        max-width: 100%;
+        padding: 0 15px;
+    }
+    
+    .candidate-list {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
+
+/* Tablet Styles */
+@media (max-width: 992px) {
+    /* Header adjustments */
+    .header-container {
+        flex-direction: column;
+        gap: 15px;
+        padding: 10px 0;
+    }
+    
+    .nav-links {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .nav-links a {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .user-profile {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 6px 12px;
+    }
+    
+    /* Hero section */
+    .hero-section h2 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-stats {
+        gap: 2rem;
+    }
+    
+    /* Results container */
+    .results-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    /* Candidate list */
+    .candidate-list {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+    
+    /* Footer */
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    /* General adjustments */
+    .container {
+        padding: 0 12px;
+    }
+    
+    /* Header - Mobile Navigation */
+    .header-container {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 10px 0;
+    }
+    
+    .nav-links {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to right, var(--primary-green), var(--dark-green));
+        padding: 10px 15px;
+        justify-content: space-around;
+        z-index: 1000;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        gap: 5px;
+    }
+    
+    .nav-links a {
+        flex-direction: column;
+        padding: 8px 10px;
+        font-size: 0.75rem;
+        border-radius: 8px;
+        min-width: 70px;
+        text-align: center;
+    }
+    
+    .nav-links a i {
+        font-size: 1rem;
+        margin-bottom: 4px;
+    }
+    
+    .nav-links a span {
+        display: block;
+    }
+    
+    .user-profile {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin-left: auto;
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+    
+    .user-profile .fa-chevron-down {
+        display: none;
+    }
+    
+    /* Adjust main content for bottom nav */
+    .main-content {
+        min-height: calc(100vh - 120px);
+        padding: 20px 0 80px; /* Extra padding for bottom nav */
+    }
+    
+    /* Hero section */
+    .hero-section {
+        padding: 2.5rem 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .hero-section h2 {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+    
+    .hero-section p {
+        font-size: 1rem;
+    }
+    
+    .hero-stats {
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+    
+    /* Auth section */
+    .auth-card {
+        max-width: 100%;
+        margin: 0 10px;
+    }
+    
+    .auth-tab {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+    
+    /* Candidate cards */
+    .candidate-list {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .candidate-card {
+        padding: 1rem;
+    }
+    
+    .candidate-info {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .candidate-avatar {
+        width: 70px;
+        height: 70px;
+        font-size: 1.5rem;
+    }
+    
+    .candidate-details h4 {
+        font-size: 1.2rem;
+    }
+    
+    .candidate-stats {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+    
+    /* User info card */
+    .user-info-card {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .user-meta {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .meta-item {
+        justify-content: center;
+    }
+    
+    /* Voting card */
+    .voting-card {
+        padding: 1.5rem;
+    }
+    
+    /* Results */
+    .result-item {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .progress-container {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .vote-count {
+        text-align: left;
+    }
+    
+    /* Stats grid */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    /* Modal */
+    .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+        margin: 10px;
+    }
+    
+    /* Footer */
+    .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .footer-logo {
+        justify-content: center;
+    }
+    
+    .footer-links ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    /* Upload container */
+    .upload-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .upload-box {
+        height: 160px;
+    }
+    
+    /* Button adjustments */
+    .btn {
+        padding: 14px 24px;
+        font-size: 1rem;
+    }
+    
+    /* Alert adjustments */
+    .alert {
+        font-size: 0.9rem;
+        padding: 0.8rem;
+    }
+    
+    /* Form adjustments */
+    .form-group input, .form-group select, .form-group textarea {
+        padding: 12px 14px;
+        font-size: 1rem;
+    }
+    
+    /* Image preview */
+    .image-preview {
+        justify-content: center;
+    }
+    
+    .preview-item {
+        width: 100px;
+        height: 70px;
+    }
+}
+
+/* Small Mobile Styles */
+@media (max-width: 480px) {
+    /* Logo adjustments */
+    .logo h1 {
+        font-size: 1.5rem;
+    }
+    
+    .logo p {
+        font-size: 0.7rem;
+    }
+    
+    /* Hero section */
+    .hero-section h2 {
+        font-size: 1.8rem;
+    }
+    
+    .hero-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    /* Auth tabs */
+    .auth-tabs {
+        width: 100%;
+    }
+    
+    .auth-tab {
+        flex: 1;
+        text-align: center;
+        padding: 10px 5px;
+        font-size: 0.85rem;
+    }
+    
+    /* Form labels */
+    .form-group label {
+        font-size: 0.9rem;
+    }
+    
+    /* Dashboard header */
+    .dashboard-header h2 {
+        font-size: 1.8rem;
+    }
+    
+    /* Candidate details */
+    .candidate-details h4 {
+        font-size: 1.1rem;
+    }
+    
+    .candidate-party {
+        font-size: 1rem;
+    }
+    
+    /* Vote confirmation */
+    #vote-confirmation .alert {
+        padding: 1rem;
+    }
+    
+    /* Results */
+    .result-info {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.8rem;
+    }
+    
+    .result-rank {
+        width: auto;
+    }
+    
+    /* Modal */
+    .modal-content {
+        padding: 1rem;
+    }
+    
+    /* Bottom navigation labels */
+    .nav-links a span {
+        font-size: 0.7rem;
+    }
+}
+
+/* Landscape Orientation for Mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+    .main-content {
+        min-height: calc(100vh - 100px);
+        padding-bottom: 70px;
+    }
+    
+    .auth-container {
+        min-height: 60vh;
+    }
+    
+    .nav-links {
+        padding: 8px 10px;
+    }
+    
+    .nav-links a {
+        padding: 6px 8px;
+        font-size: 0.7rem;
+    }
+}
+
+/* High DPI Screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Improve text rendering on high DPI screens */
+    body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    /* Increase touch target sizes */
+    .btn, .candidate-card, .nav-links a {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Remove hover effects for touch devices */
+    .candidate-card:hover {
+        transform: none;
+    }
+    
+    .nav-links a:hover {
+        transform: none;
+        background: transparent;
+    }
+    
+    /* Add active state for touch feedback */
+    .btn:active, .candidate-card:active, .nav-links a:active {
+        opacity: 0.7;
+        transform: scale(0.98);
+    }
+    
+    /* Password toggle better touch target */
+    .password-toggle {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* File upload boxes */
+    .upload-box {
+        min-height: 120px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .nav-links,
+    .user-profile,
+    .btn,
+    footer,
+    #submit-vote-btn,
+    #vote-confirmation {
+        display: none !important;
+    }
+    
+    .main-content {
+        padding: 0;
+    }
+    
+    .container {
+        max-width: 100%;
+        padding: 0;
+    }
+
         :root {
             --primary-green: #006400;
             --light-green: #4CAF50;
@@ -2634,6 +3113,123 @@
         }
         });
         });
+        // Add to your existing JavaScript, inside the DOMContentLoaded event listener:
+
+// Handle mobile menu toggle
+function setupMobileNavigation() {
+    const navLinks = document.querySelector('.nav-links');
+    const userProfile = document.querySelector('.user-profile');
+    
+    // Clone user profile for mobile
+    if (window.innerWidth <= 768) {
+        if (!document.querySelector('.mobile-user-profile')) {
+            const mobileUserProfile = userProfile.cloneNode(true);
+            mobileUserProfile.classList.add('mobile-user-profile');
+            mobileUserProfile.style.display = 'flex';
+            navLinks.appendChild(mobileUserProfile);
+            
+            // Add click event to mobile user profile
+            mobileUserProfile.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (!state.isLoggedIn) {
+                    showSection('auth');
+                } else {
+                    if (confirm('Are you sure you want to logout?')) {
+                        state.currentUser = null;
+                        state.isLoggedIn = false;
+                        localStorage.removeItem('pakvote_currentUser');
+                        updateUserInterface();
+                        showSection('home');
+                        showToast('Logged out successfully', 'success');
+                    }
+                }
+            });
+        }
+    } else {
+        // Remove mobile user profile on larger screens
+        const mobileProfile = document.querySelector('.mobile-user-profile');
+        if (mobileProfile) {
+            mobileProfile.remove();
+        }
+    }
+}
+
+// Handle viewport changes
+window.addEventListener('resize', setupMobileNavigation);
+window.addEventListener('orientationchange', setupMobileNavigation);
+
+// Initialize mobile navigation on load
+setupMobileNavigation();
+
+// Prevent zoom on input focus for mobile
+document.addEventListener('DOMContentLoaded', function() {
+    if ('ontouchstart' in window) {
+        // Add touch-action for better scrolling
+        document.documentElement.style.touchAction = 'manipulation';
+        
+        // Prevent double-tap zoom on buttons
+        document.querySelectorAll('.btn, .candidate-card, .nav-links a').forEach(el => {
+            el.style.touchAction = 'manipulation';
+        });
+        
+        // Improve form input on mobile
+        document.querySelectorAll('input, select, textarea').forEach(input => {
+            input.addEventListener('focus', function() {
+                // Add small timeout to ensure proper scrolling
+                setTimeout(() => {
+                    this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            });
+        });
+    }
+});
+
+// Handle swipe gestures for section navigation on mobile
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+});
+
+document.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+});
+
+function handleSwipe() {
+    const swipeThreshold = 50;
+    const swipeDistance = touchEndX - touchStartX;
+    
+    // Only handle horizontal swipes
+    if (Math.abs(swipeDistance) > swipeThreshold) {
+        const sections = ['home', 'auth', 'voting', 'results'];
+        const currentIndex = sections.indexOf(state.currentSection);
+        
+        if (swipeDistance > 0 && currentIndex > 0) {
+            // Swipe right - go to previous section
+            showSection(sections[currentIndex - 1]);
+        } else if (swipeDistance < 0 && currentIndex < sections.length - 1) {
+            // Swipe left - go to next section
+            showSection(sections[currentIndex + 1]);
+        }
+    }
+}
+
+// Keyboard navigation improvements for mobile
+document.addEventListener('keydown', function(e) {
+    // Handle virtual keyboard closing
+    if (e.key === 'Enter' && window.innerWidth <= 768) {
+        const activeElement = document.activeElement;
+        if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+            // Small delay to allow form submission
+            setTimeout(() => {
+                activeElement.blur();
+            }, 100);
+        }
+    }
+});
     </script>
 </body>
+
 </html>
